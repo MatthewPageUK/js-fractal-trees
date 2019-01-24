@@ -1,0 +1,305 @@
+body { 
+	font-size: 0.9em; 
+	padding: 0px; 
+	margin: 0px; 
+	background-color: white; 
+	font-family: 'Poppins', sans-serif;
+	overflow: hidden;
+}
+header {
+	position: absolute; 
+	width: 250px; 
+	top: 30px; 
+	right: 50px; 
+	margin: 0px; 
+	padding: 10px; 
+	z-index: 10000; 
+}
+			p.buttons { 
+				text-align: center;
+			}
+			p.buttons.line2 {
+				padding-top: 10px;
+				margin-top: 10px;
+				border-top: 1px solid rgba(255,255,255,0.5);
+			}
+			p.buttons button {
+				box-sizing: border-box;
+				width: 23%;
+			}
+			p.buttons.line2 button {
+				width: 47%;
+			}
+canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+#grass {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-image: url(../gfx/back.png);
+	height: 94px;
+	z-index: 2000;
+}
+h1 { 
+	margin: 0px;
+	padding: 0px;
+	line-height: 0.85em;
+    letter-spacing: -2px; 
+	font-size: 4em; 
+	color: white; 
+}
+h1 span.version {
+	font-size: 0.5em;
+}
+
+input[type=text] {
+	width: 30px;
+	padding: 5px;
+	border: 1px solid darkgrey;
+	border-radius: 5px;	
+}
+select {
+	padding: 5px;
+}
+#controls {
+	position: relative;
+	overflow: hidden;
+	border-radius: 5px;
+	background-color: rgba(255,255,255,0.7);
+	padding: 20px;
+}
+#controls p {
+	position: relative;
+	padding: 0px;
+	margin: 0 0 5px 0;
+}
+
+
+
+
+#controls p.maxBranches, #controls p.branchesGrown, #controls p.branchAngle1, #controls p.branchAngle2,
+#controls p.branchThickness, #controls p.continuousBranchGrowth, #controls p.branchGrowthRate {
+	border-bottom: 1px solid rgba(255,255,255,0.5);
+	padding-bottom: 5px;
+	line-height: 1.7em;
+}
+#controls p.branchesGrown span {
+	display: block;
+	position: absolute;
+	width: 35px;
+	top: 0px;
+	right: 0px;
+	text-align: right;
+}
+
+#controls p.maxBranches input, #controls p.branchGrowthRate input {
+	display: block;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+#controls p.continuousBranchGrowth select, #controls p.branchThickness select {
+	display: block;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 110px;
+}
+
+#controls p.branchAngle1 input {
+	width: 20px;
+}
+
+
+footer {
+	font-size: 0.9em;
+	position: absolute;
+	height: 45px;
+	width: 100%;
+	bottom: 2px;
+	right: 10px;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px;
+	color: white;
+	z-index: 50000;
+}
+footer p {
+	display: block;
+	text-align: right;
+	margin: 0px;
+	padding: 0px;
+}
+footer a { color: white; text-decoration: none; }
+footer a:visited { color: white; }
+footer a:hover { color: chartreuse; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+h3 { padding: 0px; margin: 0 0 3px 0; }
+p { padding: 0px; margin: 0 0 5px 0; }
+
+button.full { width: 200px; }
+button.half { width: 98px; }
+button.fifth { width: 37px; }
+
+
+
+
+
+
+
+
+
+.panel {
+	position: absolute;
+	z-index: 2000;
+	width: 210px;
+	height: 400px;
+	bottom: 100px;
+	right: 50px;
+	border-radius: 5px;
+	background-color: rgba(255,255,255,0.5);
+	padding: 20px;
+}
+
+
+
+
+
+
+
+
+
+div.hud {
+	position: absolute;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	padding: 10px;
+	width: 200px;
+	background-color: rgb(255,255,255,0.8);
+	z-index: 10000;
+}
+div.hud h3 { 
+	font-weight: normal;
+	border-radius: 5px 5px 0 0; position: relative; top: -10px; left: -10px; width: 200px; margin: 0px; padding: 5px 10px; background-color: black; color: deeppink; }
+
+
+
+
+
+
+
+
+
+			#treeStats {
+			
+				position: absolute;
+				bottom: 80px;
+				left: 20px;
+				width: 450px;
+				font-size: 1.5em;	
+			}
+			#treeStats p {
+				padding: 0px;
+				margin: 0px;
+				line-height: 1.1em;
+				color: rgba(0,0,0,0.5);
+			}
+
+
+
+
+
+#dna {
+	overflow: hidden;
+	top: none;
+	bottom: 50px;
+	left: 50px;
+	width: 300px;
+	height: 140px;
+
+}
+#dnaStrand {
+	margin: 5px 0 5px 0;
+	padding: 5px;
+	background-color: rgb(255,255,255,0.7);
+	border-radius: 5px;
+	text-align: center;
+    word-wrap: break-word; 
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		#settingsPopup {
+			position: absolute;
+			width: 600px;
+			height: 400px;
+			left: 0px; right: 0px; top: 0px; bottom: 0px;
+			margin: auto;
+			z-index: 50000;
+			background-color: rgba(255,255,255,0.95);
+			border: 1px solid white;
+			border-radius: 5px;
+		}
+		#settingsPopup div.inner {
+			padding: 20px;	
+		}
+		#settingsPopup #settingsClose {
+			position: absolute;
+			bottom: 5px;
+			right: 5px;
+		}
+		.settingsPanel h2 {
+			margin: 0px 0px 10px 0px;
+			padding: 0px;
+		}
+		.settingsItem {
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+			border-bottom: 1px solid rgba(127,127,127,0.5);
+		}
+		.settingsIntro {
+			margin-bottom: 10px;
+		}
