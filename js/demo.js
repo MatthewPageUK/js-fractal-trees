@@ -1,3 +1,6 @@
+/**
+ * The tree maker demo putting the FractalTree classes to use. 
+ */
 class DemoTree {
 	
 	constructor() {
@@ -9,38 +12,84 @@ class DemoTree {
 		this.hudBranches = document.getElementById('treeBranches');
 		this.hudAge = document.getElementById('treeAge');
 		this.hudLength = document.getElementById('treeLength');
+		this.hudFPS = document.getElementById('FPS');
 		this.dnaStrand = document.getElementById("dnaStrand");
 		this.compressedStrand = document.getElementById("compressedStrand");
-		this.footer = document.getElementById("footer");
 		this.urlParams = new URLSearchParams(window.location.search);
 		this.urlDNA = this.urlParams.get('dna');
 		this.loops = 0;
-		this.looper = false;		
+		this.looper = false;	
+		this.fps = 0;
+		this.lastFrame = false;
+		
 		this.myDNA = new FractalTreeDNA();
-//		this.myObserver = new DemoObserver(this, document, this.myDNA);
 		this.myTree = new FractalTree({x: ground.width/2-100, y: ground.height-20}, this.myDNA);
-//		this.myDNA.setObserver(this.myObserver);
 		this.settingsOpen('info');
+		
 		if(this.urlDNA) {
 			this.myDNA.readDNA(this.urlDNA);
 			this.settingsClose();
 		}
+		
 		this.draw();
 		this.play();
+	}
+	/**
+	 * Share the Tree DNA
+	 *
+	 * @param {String} platform - The name of the platform to share it on
+	 * @param {Object} button - The button that called this method
+	 */
+	share(platform, button) {
+		let url = encodeURIComponent("http://mjp.co/js/trees/?dna="+this.myDNA.compress(this.myDNA.dnaStrand));
+		switch (platform) {
+			case 'twitter' :
+				window.open(`https://twitter.com/intent/tweet?url=${url}`);
+			break;
+			case 'facebook' :
+				window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`);				
+			break;
+			case 'google' : 
+				window.open(`https://plus.google.com/share?url=${url}`);				
+			break;
+			case 'reddit' : 
+				window.open(`http://www.reddit.com/submit?url=${url}`);					
+			break;
+			case 'tumblr' : 
+				window.open(`http://www.tumblr.com/share/link?url=${url}`);					
+			break;
+			case 'pinterest' : 
+				window.open(`https://pinterest.com/pin/create/bookmarklet/?url=${url}`);					
+			break;
+			case 'digg' : 
+				window.open(`http://digg.com/submit?url=${url}`);					
+			break;				
+			case 'email' :
+				url = "mailto:?subject="+encodeURIComponent("A Fractal Tree just for you...")+
+							"&body="+encodeURIComponent("Here is a fractal tree for you to grow.\n\n")+url+"\n\n\n";
+				window.location.href=url;
+				
+		}
+		button.blur();
 	}
 	/**
 	 * Close the settings popup
 	 */
 	settingsClose() {
 		document.getElementById('settingsPopup').style.display = "none";
+		document.querySelectorAll('button.settings').forEach((element)=>{ element.disabled = false; });
 	}
 	/**
 	 * Open the settings popup and load the specified tab
 	 */
-	settingsOpen(tab) {
+	settingsOpen(tab, button) {
+		document.querySelectorAll('button.settings').forEach((element)=>{ element.disabled = false; });
+		try {
+			button.disabled = true;
+		} catch(e) { }
 		document.getElementById('settingsPopup').style.display = "block";
-		document.querySelectorAll(".settingsPanel").forEach((panel)=> { panel.style.display = "none"; });
-		document.querySelector(".settingsPanel."+tab).style.display = "block";
+		document.querySelectorAll(".panel").forEach((panel)=> { panel.style.display = "none"; });
+		document.querySelector(".panel."+tab).style.display = "block";
 	}
 	/**
 	 * Replant the seed, reset the tree and start growing again
@@ -55,31 +104,34 @@ class DemoTree {
 	/**
 	 * Save the canvas as an image - very much a test thing
 	 */
-	saveImage() {
+	takePhoto() {
 		this.stop();
 		let img = ground.toDataURL("image/png;base64;").replace("image/png","image/octet-stream");
 		window.open(img,"","width=700,height=700");				
 	}
-
-		/* Rewrite the DNA strand 
-		dnaStrand.textContent = myDNA.dnaStrand.replace(/(.{4})/g, '$1 ');
-		compressedStrand.textContent = myDNA.compress(myDNA.dnaStrand); */
-
 	/**
 	 * Send a single clock tick / animation loop
 	 * All we need to do is tell the tree to grow a bit
 	 */
 	sendClockTick() {
+		
+		if(!this.lastFrame) {
+			this.lastFrame = Date.now();
+			this.fps = 0;
+		}		
 		this.myTree.grow();
 		this.draw();
 		this.loops += 1;
+		
+		let delta = (Date.now() - this.lastFrame)/1000;
+		this.lastFrame = Date.now();
+		this.fps = 1/delta;
 	}
 	/**
 	 * Play the animation by repeating calls to sendClockTick
 	 */
 	play() {
 		this.looper = setInterval(()=>{ this.sendClockTick(); }, 100);
-		this.footer.style.display = "none";
 	}
 	/**
 	 * Stop the animation / loop
@@ -88,7 +140,6 @@ class DemoTree {
 		clearInterval(this.looper);
 		this.looper = false;
 		this.draw();
-		this.footer.style.display = "block";
 	}
 	/**
 	 * Draw the tree and other displays
@@ -99,12 +150,11 @@ class DemoTree {
 		this.hudBranches.textContent = this.myTree.branches.length.toLocaleString();
 		this.hudAge.textContent = this.myTree.age.toLocaleString();
 		this.hudLength.textContent = this.myTree.branches[0].totalLength.toLocaleString();
+		this.hudFPS.textContent = parseInt(this.fps);
 
-		// DNA strings ????????
-
-		/* Change background colour */
-		this.groundPaper.fillStyle = `rgb(${Math.round(Math.min(this.loops*2, 255))},120,120)`;
-		this.groundPaper.fillRect(0, 0, this.ground.width, this.ground.height);
+		/* Change background colour and clear canva */
+		document.body.style.backgroundColor = `rgb(${Math.round(Math.min(this.loops*2, 255))},120,120)`;
+		this.groundPaper.clearRect(0, 0, this.ground.width, this.ground.height);
 
 		/* For all the branches, draw them */
 		this.myTree.branches.forEach((branch)=>{
@@ -128,7 +178,7 @@ class DemoTree {
 		});
 
 		/* Respawn the leaves */
-		if(this.myTree.age == 300) {
+		if(this.myTree.age % 250 === 0) {
 			this.myTree.branches.forEach((branch)=>{
 				branch.leaf = new FractalTreeLeaf(this.myTree, branch);
 			});

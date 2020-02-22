@@ -65,7 +65,7 @@ class FractalTreeBranch {
 	 * @returns {Boolean} True or false
 	 */
 	get isFullyGrown() {
-		return this.age > 10;	
+		return ( this.age > 10 );	
 	}
 	/**
 	 * Does this branch have any children yet
@@ -73,7 +73,7 @@ class FractalTreeBranch {
 	 * @returns {Boolean} True or false
 	 */
 	get hasChildren() {
-		return this.children.length > 0;
+		return ( this.children.length > 0 );
 	}
 	/**
 	 * Grow this branch, and if fully grown make 2 more 
@@ -91,9 +91,14 @@ class FractalTreeBranch {
 
 		if(this.generation > 4) this.leaf.grow();
 		
+		this.startPoint = Object.assign({}, this.parent.endPoint);
+		/* Calculate the new endPoint of this branch */
+		this.endPoint.x = this.startPoint.x + this.len * Math.cos(Math.PI * this.angle / 180.0);
+		this.endPoint.y = this.startPoint.y + this.len * Math.sin(Math.PI * this.angle / 180.0);
+		
 		if(!this.stopped) {
 			
-			this.startPoint = Object.assign({}, this.parent.endPoint);
+			
 			this.age += 1;
 		
 			/* Carry on growing after branching */
@@ -101,10 +106,6 @@ class FractalTreeBranch {
 				this.len += this.tree.dna.getValue("continuousBranchGrowth")/3;
 			}
 		
-			/* Calculate the new endPoint of this branch */
-			this.endPoint.x = this.startPoint.x + this.len * Math.cos(Math.PI * this.angle / 180.0);
-			this.endPoint.y = this.startPoint.y + this.len * Math.sin(Math.PI * this.angle / 180.0);
-
 			/**
 			 * Check if we've gone below the grass, branches don't grow here
 			 * @todo Stop branches going back towards the tree?
@@ -129,12 +130,12 @@ class FractalTreeBranch {
 					let a2 = this.tree.dna.getValue("branchAngle2");
 
 					/* Check if we should apply a random value to Angle 1 */
-					if(this.tree.dna.getValue("branchAngle1TypeRandom")==1) {
+					if(this.tree.dna.getValue("branchAngle1Random")==1) {
 						a1 = Math.random()*(this.tree.dna.getValue("branchAngle1RandomTo")-this.tree.dna.getValue("branchAngle1RandomFrom")) 
 							+ this.tree.dna.getValue("branchAngle1RandomFrom");
 					}
 					/* Check if we should apply a random value to Angle 2 */
-					if(this.tree.dna.getValue("branchAngle2TypeRandom")==1) {
+					if(this.tree.dna.getValue("branchAngle2Random")==1) {
 						a2 = Math.random()*(this.tree.dna.getValue("branchAngle2RandomTo")-this.tree.dna.getValue("branchAngle2RandomFrom")) 
 							+ this.tree.dna.getValue("branchAngle2RandomFrom");
 					}
@@ -150,6 +151,29 @@ class FractalTreeBranch {
 			} 
 		}
 		if(this.hasChildren) {
+			
+			//if(!this.isFullyGrown) {
+
+			/* Angle Change 
+									<input type="checkbox" value="1" id="branchAngle1Change"> 
+						<select id="branchAngle1ChangeDirection">
+							<option value="1">Increase angle with age</option>
+							<option value="0">Decrease angle with age</option>
+						</select>
+						by  
+						<input id="branchAngle1ChangeValue" type="text" value="5"> 	*/
+			
+				if( this.tree.dna.getValue("branchAngle1Change") == 1 ) {
+					if( this.tree.dna.getValue("branchAngle1ChangeDirection") == 1 ) {
+						this.children[0].angle += this.tree.dna.getValue("branchAngle1ChangeValue")/5;
+						this.children[1].angle -= this.tree.dna.getValue("branchAngle1ChangeValue")/5;
+					} else {
+						this.children[0].angle -= this.tree.dna.getValue("branchAngle1ChangeValue")/5;
+						this.children[1].angle += this.tree.dna.getValue("branchAngle1ChangeValue")/5;
+					}
+				}
+			//}
+			
 			/* Grow the existing children */
 			this.children.forEach((branch)=>{
 				branch.grow();
