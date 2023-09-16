@@ -159,8 +159,8 @@ class DemoTree {
 		}
 		this.groundPaper.clearRect(0, 0, this.ground.width, this.ground.height);
 
-		this.groundPaper.fillStyle = "#92400e";
-		this.groundPaper.strokeStyle = "#92400e";
+		this.groundPaper.fillStyle = "#fbbf24";
+		this.groundPaper.strokeStyle = "#fbbf24";
 		/* For all the branches, draw them */
 		this.myTree.branches.forEach((branch)=>{
 			this.groundPaper.beginPath();
