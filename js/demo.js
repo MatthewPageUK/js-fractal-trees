@@ -1,9 +1,9 @@
 /**
- * The tree maker demo putting the FractalTree classes to use. 
+ * The tree maker demo putting the FractalTree classes to use.
  */
 class DemoTree {
-	
-	constructor() {
+
+	constructor(transparentBackground = false) {
 
 		this.ground = document.getElementById("ground");
 		this.groundPaper = ground.getContext("2d");
@@ -18,19 +18,20 @@ class DemoTree {
 		this.urlParams = new URLSearchParams(window.location.search);
 		this.urlDNA = this.urlParams.get('dna');
 		this.loops = 0;
-		this.looper = false;	
+		this.looper = false;
 		this.fps = 0;
 		this.lastFrame = false;
-		
+		this.transparentBackground = transparentBackground;
+
 		this.myDNA = new FractalTreeDNA();
 		this.myTree = new FractalTree({x: ground.width/2-100, y: ground.height-20}, this.myDNA);
 		this.settingsOpen('info');
-		
+
 		if(this.urlDNA) {
 			this.myDNA.readDNA(this.urlDNA);
 			this.settingsClose();
 		}
-		
+
 		this.draw();
 		this.play();
 	}
@@ -47,28 +48,28 @@ class DemoTree {
 				window.open(`https://twitter.com/intent/tweet?url=${url}`);
 			break;
 			case 'facebook' :
-				window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`);				
+				window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`);
 			break;
-			case 'google' : 
-				window.open(`https://plus.google.com/share?url=${url}`);				
+			case 'google' :
+				window.open(`https://plus.google.com/share?url=${url}`);
 			break;
-			case 'reddit' : 
-				window.open(`http://www.reddit.com/submit?url=${url}`);					
+			case 'reddit' :
+				window.open(`http://www.reddit.com/submit?url=${url}`);
 			break;
-			case 'tumblr' : 
-				window.open(`http://www.tumblr.com/share/link?url=${url}`);					
+			case 'tumblr' :
+				window.open(`http://www.tumblr.com/share/link?url=${url}`);
 			break;
-			case 'pinterest' : 
-				window.open(`https://pinterest.com/pin/create/bookmarklet/?url=${url}`);					
+			case 'pinterest' :
+				window.open(`https://pinterest.com/pin/create/bookmarklet/?url=${url}`);
 			break;
-			case 'digg' : 
-				window.open(`http://digg.com/submit?url=${url}`);					
-			break;				
+			case 'digg' :
+				window.open(`http://digg.com/submit?url=${url}`);
+			break;
 			case 'email' :
 				url = "mailto:?subject="+encodeURIComponent("A Fractal Tree just for you...")+
 							"&body="+encodeURIComponent("Here is a fractal tree for you to grow.\n\n")+url+"\n\n\n";
 				window.location.href=url;
-				
+
 		}
 		button.blur();
 	}
@@ -107,22 +108,22 @@ class DemoTree {
 	takePhoto() {
 		this.stop();
 		let img = ground.toDataURL("image/png;base64;").replace("image/png","image/octet-stream");
-		window.open(img,"","width=700,height=700");				
+		window.open(img,"","width=700,height=700");
 	}
 	/**
 	 * Send a single clock tick / animation loop
 	 * All we need to do is tell the tree to grow a bit
 	 */
 	sendClockTick() {
-		
+
 		if(!this.lastFrame) {
 			this.lastFrame = Date.now();
 			this.fps = 0;
-		}		
+		}
 		this.myTree.grow();
 		this.draw();
 		this.loops += 1;
-		
+
 		let delta = (Date.now() - this.lastFrame)/1000;
 		this.lastFrame = Date.now();
 		this.fps = 1/delta;
@@ -153,7 +154,9 @@ class DemoTree {
 		this.hudFPS.textContent = parseInt(this.fps);
 
 		/* Change background colour and clear canva */
-		document.body.style.backgroundColor = `rgb(${Math.round(Math.min(this.loops*2, 255))},120,120)`;
+		if (! this.transparentBackground) {
+			document.body.style.backgroundColor = `rgb(${Math.round(Math.min(this.loops*2, 255))},120,120)`;
+		}
 		this.groundPaper.clearRect(0, 0, this.ground.width, this.ground.height);
 
 		/* For all the branches, draw them */
@@ -171,7 +174,7 @@ class DemoTree {
 				this.groundPaper.fillStyle = `rgba(${branch.leaf.colour.r},${branch.leaf.colour.g},${branch.leaf.colour.b}, 0.9)`;
 				this.groundPaper.beginPath();
 				/* Draw at end of branch, if falling add on the fall amount + sin wave */
-				this.groundPaper.arc(branch.endPoint.x + ((Math.sin(branch.leaf.isFalling * Math.PI / 180))*20)+(branch.leaf.isFalling/5), 
+				this.groundPaper.arc(branch.endPoint.x + ((Math.sin(branch.leaf.isFalling * Math.PI / 180))*20)+(branch.leaf.isFalling/5),
 								branch.endPoint.y + ((branch.leaf.isFalling)?branch.leaf.isFalling:0), branch.leaf.size, 0, 2 * Math.PI);
 				this.groundPaper.fill();
 			}
@@ -193,7 +196,7 @@ class DemoTree {
 			document.getElementById("butStop").disabled = true;
 		}
 	}
-	
+
 }
 
 

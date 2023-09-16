@@ -30,14 +30,14 @@ class FractalTreeDNA {
 		this.genes = [];
 		this.genesMap = [];
 		this.genes.push(new FractalTreeGene("maxBranches", 512, 5000, 15));
-		this.genes.push(new FractalTreeGene("branchAngle1Random", 0, 1, 0));
+		this.genes.push(new FractalTreeGene("branchAngle1Random", 1, 1, 0));
 		this.genes.push(new FractalTreeGene("branchAngle1", 15, 150, -150));
 		this.genes.push(new FractalTreeGene("branchAngle1RandomFrom", 5, 150, -150));
 		this.genes.push(new FractalTreeGene("branchAngle1RandomTo", 30, 150, -150));
 		this.genes.push(new FractalTreeGene("branchAngle1Change", 0, 1, 0));
 		this.genes.push(new FractalTreeGene("branchAngle1ChangeDirection", 0, 1, 0));
 		this.genes.push(new FractalTreeGene("branchAngle1ChangeValue", 2, 20, 0));
-		this.genes.push(new FractalTreeGene("branchAngle2Random", 0, 1, 0));
+		this.genes.push(new FractalTreeGene("branchAngle2Random", 1, 1, 0));
 		this.genes.push(new FractalTreeGene("branchAngle2", 15, 150, -150));
 		this.genes.push(new FractalTreeGene("branchAngle2RandomFrom", 5, 150, -150));
 		this.genes.push(new FractalTreeGene("branchAngle2RandomTo", 30, 150, -150));
@@ -46,7 +46,7 @@ class FractalTreeDNA {
 		this.genes.push(new FractalTreeGene("branchAngle2ChangeValue", 2, 20, 0));
 		this.genes.push(new FractalTreeGene("branchThickness", 0, 20, 0));
 		this.genes.push(new FractalTreeGene("continuousBranchGrowth", 0, 20, 0));
-		this.genes.push(new FractalTreeGene("branchGrowthRate", 5, 20, 2));		
+		this.genes.push(new FractalTreeGene("branchGrowthRate", 5, 20, 2));
 		this.genes.forEach( (gene) => { this.genesMap[gene.name] = gene; } );
 	}
 	/**
@@ -73,15 +73,15 @@ class FractalTreeDNA {
 		this.genesMap[name].setValue(parseInt(value));
 	}
 	/**
-	 * Get the full DNA strand of all the values in the genes 
+	 * Get the full DNA strand of all the values in the genes
 	 * Encode the value from each of the genes then return the full string
 	 *
 	 * @returns {String} The full DNA string in GTAC format
 	 */
 	get dnaStrand() {
-		let strand = "";		
+		let strand = "";
 		this.genes.forEach((gene) => { strand += gene.dnaStrand; } );
-		return strand;	
+		return strand;
 	}
 	/**
 	 * Read and import the settings from a DNA strand. Uncompress if needed, convert letters
@@ -91,20 +91,20 @@ class FractalTreeDNA {
 	 * @param {String} dnaStrand - The DNA strand to import in GTAC or GTAC compressed format
 	 */
 	readDNA(dnaStrand) {
-		
+
 		/* If the dnaStrand contains numbers it needs uncompressing */
 		if(/[0-9]/.test(dnaStrand)) dnaStrand = this.uncompress(dnaStrand);
-		
+
 		/**
-		 * From letters to numbers @todo make a map array 
+		 * From letters to numbers @todo make a map array
 		 * Each setting has a 6 digit block /.{1,6}/g
 		 * Convert from base 4 to base 10 - return in an array of values
 		 */
 		let final = dnaStrand.replace(/G/g, "0").replace(/T/g, "1").replace(/A/g, "2")
 						.replace(/C/g, "3").match(/.{1,6}/g).map(x => parseInt(x, 4).toString(10));
-				
+
 		/**
-		 * Update the settings (in order - this is bad and open to mistakes..) 
+		 * Update the settings (in order - this is bad and open to mistakes..)
 		 */
 		this.setValue("maxBranches", final[0]);
 		this.setValue("branchAngle1Random", final[1]);
@@ -124,7 +124,7 @@ class FractalTreeDNA {
 		this.setValue("branchThickness", final[15]);
 		this.setValue("continuousBranchGrowth", final[16]);
 		this.setValue("branchGrowthRate", final[17]);
-	
+
 	}
 	/**
 	 * Compress the string AAAACCCCTT becomes 5A4CTT
@@ -133,7 +133,7 @@ class FractalTreeDNA {
 	 * @returns {String} The compressed DNA string
 	 */
 	compress(dna) {
-		return dna.replace(/(.)\1{2,}/g, (match)=>{ 
+		return dna.replace(/(.)\1{2,}/g, (match)=>{
   			return ( match.length + match.substring(0,1) );
 		});
 	}

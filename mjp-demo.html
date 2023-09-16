@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Javascript - Growing Fractal Trees v0.1</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<meta name="author" content="Matthew Page">
+		<link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Nanum+Brush+Script" rel="stylesheet">
+		<link href="./css/main.css" rel="stylesheet">
+	</head>
+	<body style="background-color: #444444; ">
+		<header>
+			<h1>Growing Fractal Trees <span class="version">v0.1</span></h1>
+			<p class="buttons line1">
+				<button id="butStart" onclick="myDemo.play()">Grow</button>
+				<button id="butStop" onclick="myDemo.stop()">Pause</button>
+				<button id="butPhoto" onclick="myDemo.takePhoto()">Photo</button>
+			</p>
+			<p class="buttons design">
+				<strong>Design your own tree</strong>
+				<button class="settings" onclick="myDemo.settingsOpen('maxBranches', this);">Max Branches</button>
+				<button class="settings" onclick="myDemo.settingsOpen('angle1', this);">Angle 1</button>
+				<button class="settings" onclick="myDemo.settingsOpen('angle2', this);">Angle 2</button>
+				<button class="settings" onclick="myDemo.settingsOpen('thickness', this);">Thickness</button>
+				<button class="settings" onclick="myDemo.settingsOpen('growth', this);">Growth</button>
+				<button class="settings" onclick="myDemo.settingsOpen('rate', this);">Growth Rate</button>
+				<button class="settings" onclick="myDemo.settingsOpen('leaves', this);">Leaves</button>
+				<button class="settings" onclick="alert('Coming soon...');">Sway</button>
+			</p>
+			<p class="buttons plant">
+				<button id="butPlant" onclick="myDemo.plantSeed()">Plant a new tree</button>
+			</p>
+			<p class="buttons foot">
+				<button class="settings" onclick="myDemo.settingsOpen('info', this);">About</button>
+				<button class="settings" onclick="myDemo.settingsOpen('dna', this);">Share DNA</button>
+			</p>
+		</header>
+		<canvas id="ground"></canvas>
+		<div id="grass"></div>
+<!-- Popup for settings and info -->
+		<div id="settingsPopup">
+<!-- About info panel -->
+			<div class="panel info">
+				<h2>Fractal Tree Growing Demo</h2>
+				<p class="intro">Welcome to my Fractal Tree Growing page. Grow an almost infinite number of unique and beautiful fractal trees.</p>
+				<p>Design your tree by changing the rules that define how the tree grows. Choose how the leaves grow and fall, have a short
+					stumpy tree or one that fills the screen with scraggle. The possible combinations are endless.</p>
+				<p>Tip! You can pause the growth of your tree at anytime, update its DNA settings and then resume growth with the new parameters.</p>
+				<p>Once your tree has grown it will continue to grow and drop leaves. To watch your tree grow again
+					you can <button onclick="myDemo.plantSeed()">Plant a new tree</button></p>
+				<p>Once you have refined your perfect tree why not send it to your friends and family using its unique
+					<button onclick="myDemo.settingsOpen('dna')">Tree DNA</button></p>
+				<p>Hope you have fun, comments and suggestions welcome.</p>
+			</div>
+<!-- DNA Strand info page -->
+			<div class="panel dna">
+				<h2>Your Tree DNA</h2>
+				<p class="center" id="dnaStrand">0000</p>
+				<h3>Link to this tree</h3>
+				<p class="underline small wrap"><span id="dnaCompressed">0000</span></p>
+				<h3>Share this tree with your friends and family</h3>
+				<p class="share">
+					<button onclick="myDemo.share('twitter', this);">Twitter</button>
+					<button onclick="myDemo.share('facebook', this);">Facebook</button>
+					<button onclick="myDemo.share('reddit', this);">Reddit</button>
+					<button onclick="myDemo.share('google', this);">Google +</button>
+					<button onclick="myDemo.share('tumblr', this);">Tumblr</button>
+					<button onclick="myDemo.share('pinterest', this);">Pinterest</button>
+					<button onclick="myDemo.share('digg', this);">Digg</button>
+					<button onclick="myDemo.share('email', this);">Email</button>
+				</p>
+			</div>
+<!-- Settings : Max Branches -->
+			<div class="panel maxBranches">
+				<h2>Maximum number of branches</h2>
+				<p class="intro">The total number of branches this tree can grow. On slower computers you may have to reduce this or
+					if you have a fast computer watch your screen fill with tree branches on higher settings.</p>
+				<p class="underline">Max branches <input id="maxBranches" type="number" min="64" max="10000" value="8190" step="64"></p>
+				<p class="dnaSnippet"><span></span><strong id="maxBranchesDNA">DNA</strong></p>
+			</div>
+<!-- Settings : Angle 1 -->
+			<div class="panel angle1">
+				<h2>Branch Angle 1 - Right hand</h2>
+				<p class="intro">
+					The angle of a new branch to the right from the parent branch. A higher value causes the branches to spread out more.</p>
+				<p class="underline">
+					<label for="branchAngle1">Fixed angle</label> <input id="branchAngle1" type="text" value="10"></p>
+				<p class="underline">
+					Branch at a random angle, this grows a more natural and varied looking tree.<br />
+					<input type="checkbox" value="1" name="branchAngle1Random" id="branchAngle1Random">
+					<label for="branchAngle1Random">Random angle</label>
+					<label for="branchAngle1RandomFrom">from</label> <input id="branchAngle1RandomFrom" type="text" value="5">
+					<label for="branchAngle1RandomTo">to</label> <input id="branchAngle1RandomTo" type="text" value="30">
+				</p>
+				<p class="">
+					Increase or decrease the angle with age causing the tree to sag or perk up over time.<br />
+					<input type="checkbox" value="1" id="branchAngle1Change">
+					<select id="branchAngle1ChangeDirection" onchange="document.getElementById('branchAngle1Change').checked=true">
+						<option value="1">Increase angle with age</option>
+						<option value="0">Decrease angle with age</option>
+					</select>
+					<label for="branchAngle1ChangeValue">by </label>
+					<input id="branchAngle1ChangeValue" type="text" value="5">
+				</p>
+				<p class="dnaSnippet"><span></span> <strong id="branchAngle1DNA">DNA</strong></p>
+			</div>
+<!-- Settings : Angle 2 -->
+			<div class="panel angle2">
+				<h2>Branch Angle 2 - Left hand</h2>
+				<p class="intro">
+					The angle of a new branch to the left from the parent branch. A higher value causes the branches to spread out more.</p>
+				<p class="underline">
+					<label for="branchAngle2">Fixed angle</label> <input id="branchAngle2" type="text" value="10"></p>
+				<p class="underline">
+					Branch at a random angle, this grows a more natural and varied looking tree.<br />
+					<input type="checkbox" value="1" name="branchAngle2Random" id="branchAngle2Random">
+					<label for="branchAngle2Random">Random angle</label>
+					<label for="branchAngle2RandomFrom">from</label> <input id="branchAngle2RandomFrom" type="text" value="5">
+					<label for="branchAngle2RandomTo">to</label> <input id="branchAngle2RandomTo" type="text" value="30">
+				</p>
+				<p class="">
+					Increase or decrease the angle with age causing the tree to sag or perk up over time.<br />
+					<input type="checkbox" value="1" id="branchAngle2Change">
+					<select id="branchAngle2ChangeDirection" onchange="document.getElementById('branchAngle2Change').checked=true">
+						<option value="1">Increase angle with age</option>
+						<option value="0">Decrease angle with age</option>
+					</select>
+					<label for="branchAngle2ChangeValue">by </label>
+					<input id="branchAngle2ChangeValue" type="text" value="5">
+				</p>
+				<p class="dnaSnippet"><span></span> <strong id="branchAngle2DNA">DNA</strong></p>
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Settings : Thickness -->
+				<div class="panel thickness">
+					<h2>Branch Thickness</h2>
+					<p class="intro">This determines how thick your tree branches will grow over time. All branches
+						start as a twig and with these settings can grow into a solid branch.</p>
+					<p class="settingsItem">
+						<select id="branchThickness">
+							<option value="0">Thin</option>
+							<option value="10">Medium</option>
+							<option value="6">Thick</option>
+							<option value="3">Very Thick</option>
+						</select>
+					</p>
+				</div>
+<!-- Settings : Continuous Growth -->
+				<div class="panel growth">
+					<h2>Continuous Growth</h2>
+					<p class="intro">By default a branch will stop growing longer when it has spawned two child
+						branches. This settings allows the branches to carry on growing throughout the whole life of the tree.</p>
+					<p class="settingsItem">
+						<select id="continuousBranchGrowth">
+							<option value="0">Stop growing on branch</option>
+							<option value="1">Low</option>
+							<option value="2">Medium</option>
+							<option value="3">High</option>
+						</select>
+					</p>
+					<p class="intro">Tip - if your tree gets too big try reducing the
+						<button onclick="myDemo.settingsOpen('rate')">Growth Rate</button> to slow it down.</p>
+				</div>
+<!-- Settings : Growth rate -->
+				<div class="panel rate">
+					<h2>Growth Rate</h2>
+					<p class="intro">
+						This controls how fast your tree branches grow, a low value and it will grow into a short stubby bush, a high value and it
+						will soar towards the sky and off the screen.
+					</p>
+					<p class="settingsItem">
+						Grow <input id="branchGrowthRate" type="text" value="5"> units each year.</p>
+				</div>
+<!-- Settings : Leaves -->
+				<div class="panel leaves">
+					<h2>Leaves</h2>
+					<p class="intro">
+						These settings control how your tree will grow and drop leaves.
+					</p>
+					<p class="settingsItem">
+						<input type="checkbox" value="1" id="leavesGrow" checked> Grow leaves.</p>
+					<p class="settingsItem">
+						Grow leaves on branches above generation <span class="fright"><input id="leavesMinGeneration" type="text" value="5"></span></p>
+					<p class="settingsItem">
+						Years before leaves regrow <span class="fright"><input id="leavesRegrow" type="text" value="250"></span></p>
+				</div>
+			<button id="settingsClose" onclick="myDemo.settingsClose();">X</button>
+		</div>
+	<!-- Tree stats -->
+		<div id="treeStats">
+			<p>FPS <span id="FPS">0</span></p>
+			<p>Branches grown <span id="treeBranches">0</span></p>
+			<p>Age <span id="treeAge">0</span> years</p>
+			<p>Total branch length <span id="treeLength">0</span></p>
+		</div>
+	<!-- Footer text and links -->
+		<footer id="footer">
+			<p class="code"><a href="http://www.mjp.co">Source code on GitHub</a></p>
+			<p class="author"><a href="http://www.mjp.co">By Matthew Page</a></p>
+		</footer>
+	<!-- Load the tree and demo scripts -->
+		<script src="js/fractal-tree-leaf.js" type="text/javascript"></script>
+		<script src="js/fractal-tree-gene.js" type="text/javascript"></script>
+		<script src="js/fractal-tree-dna.js" type="text/javascript"></script>
+		<script src="js/fractal-tree.js" type="text/javascript"></script>
+		<script src="js/fractal-tree-branch.js" type="text/javascript"></script>
+		<script src="js/demo-observer.js" type="text/javascript"></script>
+		<script src="js/demo.js" type="text/javascript"></script>
+		<script>
+			const myDemo = new DemoTree(true);
+			const myObserver = new DemoObserver(document, myDemo.myDNA);
+			myDemo.myDNA.genes.forEach((gene)=> {
+				myObserver.receiveUpdatedMessage("dna", gene.name);
+			});
+			myObserver.listen(1000);
+
+		</script>
+	</body>
+</html>
